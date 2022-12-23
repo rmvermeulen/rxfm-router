@@ -10,7 +10,7 @@ export type RouteDetails = {
 };
 export type RouteMap = { [href: string]: ElementChild | RouteDetails };
 
-export const AppRouter = () => {
+export const Router = () => {
   const url = store.selectState("url");
   return (
     <div>
