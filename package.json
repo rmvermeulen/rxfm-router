@@ -3,27 +3,35 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "jest",
-    "build": "webpack --config webpack.prod.js"
+    "build": "pnpm run clean && webpack --config webpack.prod.js",
+    "dev": "pnpm run clean && webpack --config webpack.dev.js",
+    "clean": "rimraf dist"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "peerDependencies": {
-    "rxjs": "^7.0.0"
+    "rxfm": "^2.0.0"
   },
   "dependencies": {
     "qs": "^6.11.0",
-    "rambda": "^7.4.0",
-    "rxfm": "^2.1.1",
-    "rxjs": "^7.8.0",
-    "rxjs-etc": "^10.6.2"
+    "rambda": "^7.4.0"
   },
   "devDependencies": {
-    "jest": "^29.3.1",
+    "rimraf": "^3.0.2",
+    "rxfm": "^2.1.1",
+    "rxjs": "^7.8.0",
+    "rxjs-etc": "^10.6.2",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.4",
-    "webpack": "^5.75.0"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-rxjs-externals": "^2.0.0"
   }
 }
