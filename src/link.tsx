@@ -1,4 +1,4 @@
-import { DefaultProps } from "rxfm";
+import RxFM, { DefaultProps } from "rxfm";
 import { Observable, map } from "rxjs";
 import { updateRouterState } from "./state";
 
@@ -10,7 +10,7 @@ export const Link = ({
     <a
       href={href}
       onClick={href.pipe(
-        map((url) => (e) => {
+        map((url) => (e: MouseEvent) => {
           e.preventDefault();
           updateRouterState({ route: url });
         })
