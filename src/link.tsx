@@ -1,11 +1,12 @@
 import RxFM, { DefaultProps } from "rxfm";
-import { Observable, map } from "rxjs";
+import { Observable, map, of } from "rxjs";
 import { updateRouterState } from "./state";
 
 export const Link = ({
   href,
   children,
 }: { href: Observable<string> } & DefaultProps) => {
+  console.log("rendering Link", { href });
   return (
     <a
       href={href}
@@ -16,7 +17,7 @@ export const Link = ({
         })
       )}
     >
-      {children}
+      children: {children}
     </a>
   );
 };
