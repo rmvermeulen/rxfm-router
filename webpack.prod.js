@@ -6,6 +6,7 @@ module.exports = [
     mode: "production",
     devtool: "source-map",
     entry: "./src/index.ts",
+    context: path.resolve(__dirname),
     output: {
       filename: "index.js",
       path: path.resolve(__dirname, "dist"),
