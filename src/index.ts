@@ -1,3 +1,4 @@
-export { Router } from "./router";
 export { Link } from "./link";
-export { Store as RouterStore, store as routerStore } from "./store.ts";
+export { Router } from "./router";
+export { routerState as routerStore } from "./store";
+export * from "./types";

@@ -1,6 +1,6 @@
 import RxFM, { DefaultProps } from "rxfm";
 import { Observable, map } from "rxjs";
-import { store } from "../../app/app";
+import { routerState } from "./store";
 
 export const Link = ({
   href,
@@ -12,7 +12,7 @@ export const Link = ({
       onClick={href.pipe(
         map((url) => (e) => {
           e.preventDefault();
-          store.dispatch({
+          routerState.next({
             type: "set url",
             payload: url,
           });
