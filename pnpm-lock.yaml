@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/qs': ^6.9.7
   qs: ^6.11.0
   rambda: ^7.4.0
   rimraf: ^3.0.2
@@ -18,6 +19,7 @@ dependencies:
   rambda: 7.4.0
 
 devDependencies:
+  '@types/qs': 6.9.7
   rimraf: 3.0.2
   rxfm: 2.1.1_rxjs@7.8.0
   rxjs: 7.8.0
@@ -96,6 +98,10 @@ packages:
 
   /@types/node/18.11.17:
     resolution: {integrity: sha512-HJSUJmni4BeDHhfzn6nF0sVmd1SMezP7/4F0Lq+aXzmp2xm9O7WXrUtHW/CHlYVtZUbByEvWidHqRtcJXGF2Ng==}
+    dev: true
+
+  /@types/qs/6.9.7:
+    resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
     dev: true
 
   /@webassemblyjs/ast/1.11.1:

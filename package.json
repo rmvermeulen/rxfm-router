@@ -23,6 +23,7 @@
     "rambda": "^7.4.0"
   },
   "devDependencies": {
+    "@types/qs": "^6.9.7",
     "rimraf": "^3.0.2",
     "rxfm": "^2.1.1",
     "rxjs": "^7.8.0",

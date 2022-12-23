@@ -11,6 +11,7 @@ import {
 import { combineLatestObject } from "rxjs-etc";
 import { selectRouterState, updateRouterState } from "./state";
 import { RouteDetails, RouteMap } from "./types";
+import qs from "qs";
 
 const isRouteDetails = (
   value: ElementChild | RouteDetails
@@ -30,6 +31,13 @@ export const Router = ({ route, routes }: RouterProps): RxFM.JSX.Element => {
     route: makeObservable(route),
     routes: makeObservable(routes),
   }).subscribe(updateRouterState);
+  // manage browser history
+  selectRouterState((x) => x.route).subscribe((route: string) =>
+    history.pushState(null, "", route.startsWith("/") ? route : `/${route}`)
+  );
+  window.onpopstate = (e: PopStateEvent) => {
+    getRouteF;
+  };
   // react from now on
   return combineLatest([
     selectRouterState("route"),
