@@ -1,5 +1,5 @@
 import { ElementChild } from "rxfm";
-import { BehaviorSubject, Subject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 export type BehaviorSubjectType<T> = T extends BehaviorSubject<infer X>
   ? X
@@ -18,6 +18,7 @@ export type NavigationState = "idle" | "before" | "after";
 
 export type RouterState = {
   navigation: NavigationState;
-  url: string;
+  fullUrl: string;
   route: string;
+  routes: RouteMap;
 };

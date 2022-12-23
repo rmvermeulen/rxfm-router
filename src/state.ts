@@ -1,16 +1,13 @@
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
-import { ObservableValue } from "rxjs-etc";
-import { NavigationState, RouteMap } from "./types";
+import { NavigationState, RouteMap, RouterState } from "./types";
 
 // default store
-export const routerState = new BehaviorSubject({
+export const routerState = new BehaviorSubject<RouterState>({
   navigation: "idle" as NavigationState,
   fullUrl: "",
   route: "",
   routes: {} as RouteMap,
 });
-
-export type RouterState = ObservableValue<typeof routerState>;
 
 export const mapRouterState = (fn: (state: RouterState) => RouterState) =>
   routerState.next(fn(routerState.value));
