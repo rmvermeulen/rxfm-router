@@ -1,7 +1,7 @@
 import { RamdaPath, intersperse, path } from "rambda";
 import RxFM, { ElementChild } from "rxfm";
 import { combineLatest, defer, switchMap } from "rxjs";
-import { routerState } from "./store";
+import { routerState } from "./state";
 import { RouteDetails } from ".";
 
 export const Router = () => {
