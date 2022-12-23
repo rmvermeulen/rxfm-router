@@ -1,6 +1,14 @@
 import { RamdaPath, intersperse, path } from "rambda";
 import RxFM, { DefaultProps, ElementChild } from "rxfm";
-import { Observable, combineLatest, defer, switchMap } from "rxjs";
+import {
+  Observable,
+  combineLatest,
+  defer,
+  isObservable,
+  of,
+  switchMap,
+} from "rxjs";
+import { combineLatestObject } from "rxjs-etc";
 import { selectRouterState, updateRouterState } from "./state";
 import { RouteDetails, RouteMap } from "./types";
 
@@ -13,7 +21,16 @@ type RouterProps = {
   routes: RouteMap | Observable<RouteMap>;
 } & DefaultProps;
 
+const makeObservable = <T,>(value: T | Observable<T>): Observable<T> =>
+  isObservable(value) ? value : of(value);
+
 export const Router = ({ route, routes }: RouterProps): RxFM.JSX.Element => {
+  // initialize router state
+  combineLatestObject({
+    route: makeObservable(route),
+    routes: makeObservable(routes),
+  }).subscribe(updateRouterState);
+  // react from now on
   return combineLatest([
     selectRouterState("route"),
     selectRouterState("routes"),

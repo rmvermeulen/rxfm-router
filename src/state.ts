@@ -12,11 +12,13 @@ export const routerState = new BehaviorSubject<RouterState>({
 export const mapRouterState = (fn: (state: RouterState) => RouterState) =>
   routerState.next(fn(routerState.value));
 
-export const updateRouterState = (update: Partial<RouterState>) =>
-  routerState.next({
-    ...update,
+export const updateRouterState = (update: Partial<RouterState>) => {
+  const next = {
     ...routerState.value,
-  });
+    ...update,
+  };
+  routerState.next(next);
+};
 
 const propFn =
   <T>(prop: keyof T) =>
