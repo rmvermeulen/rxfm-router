@@ -12,12 +12,13 @@ export const Link = ({
       href={href}
       onClick={href.pipe(
         map((url) => (e: MouseEvent) => {
+          console.log("rxfm-router:link [clicked]", url);
           e.preventDefault();
           updateRouterState({ route: url });
         })
       )}
     >
-      children: {children}
+      {children}
     </a>
   );
 };

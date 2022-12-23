@@ -1,39 +1,39 @@
 import { RamdaPath, intersperse, path } from "rambda";
-import RxFM, { ElementChild } from "rxfm";
-import { combineLatest, defer, switchMap } from "rxjs";
-import { selectRouterState } from "./state";
-import { RouteDetails } from "./types";
+import RxFM, { DefaultProps, ElementChild } from "rxfm";
+import { Observable, combineLatest, defer, switchMap } from "rxjs";
+import { selectRouterState, updateRouterState } from "./state";
+import { RouteDetails, RouteMap } from "./types";
 
 const isRouteDetails = (
   value: ElementChild | RouteDetails
 ): value is RouteDetails => typeof value === "object";
 
-export const RouterLabelLite = <p>Router</p>;
-export const RouterLabel = () => <p>Router</p>;
+type RouterProps = {
+  route: string | Observable<string>;
+  routes: RouteMap | Observable<RouteMap>;
+} & DefaultProps;
 
-export const Router = (): RxFM.JSX.Element => (
-  <div id="rxfm-router">
-    {combineLatest([
-      selectRouterState("route"),
-      selectRouterState("routes"),
-    ]).pipe(
-      switchMap(([route, routes]) =>
-        defer(() => {
-          const getMatch = path<ElementChild | RouteDetails>(
-            intersperse("children", route.split("/")) as RamdaPath
-          );
-          let match = getMatch(routes);
-          // return typeof match == 'function')?
-          if (isRouteDetails(match)) {
-            match = match.component;
-          }
-          return match ? (
-            <div>{match}</div>
-          ) : (
-            <pre>404 - [{route}] not found</pre>
-          );
-        })
-      )
-    )}
-  </div>
-);
+export const Router = ({ route, routes }: RouterProps): RxFM.JSX.Element => {
+  return combineLatest([
+    selectRouterState("route"),
+    selectRouterState("routes"),
+  ]).pipe(
+    switchMap(([route, routes]) =>
+      defer(() => {
+        const getMatch = path<ElementChild | RouteDetails>(
+          intersperse("children", route.split("/")) as RamdaPath
+        );
+        let match = getMatch(routes);
+        // return typeof match == 'function')?
+        if (isRouteDetails(match)) {
+          match = match.component;
+        }
+        return match ? (
+          <div>{match}</div>
+        ) : (
+          <pre>404 - [{route}] not found</pre>
+        );
+      })
+    )
+  );
+};
