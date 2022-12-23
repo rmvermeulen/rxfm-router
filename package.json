@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "peerDependencies": {
     "rxjs": "^7.0.0"
   },
@@ -21,6 +21,7 @@
     "rxjs-etc": "^10.6.2"
   },
   "devDependencies": {
+    "jest": "^29.3.1",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.4",
     "webpack": "^5.75.0"

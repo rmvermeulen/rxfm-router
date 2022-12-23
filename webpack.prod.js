@@ -1,5 +1,4 @@
 const path = require("path");
-var HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = [
   {
@@ -10,6 +9,10 @@ module.exports = [
     output: {
       filename: "index.js",
       path: path.resolve(__dirname, "dist"),
+      library: {
+        name: "rxfm-router",
+        type: "umd",
+      },
     },
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
@@ -23,6 +26,5 @@ module.exports = [
         },
       ],
     },
-    plugins: [new HtmlWebpackPlugin()],
   },
 ];
