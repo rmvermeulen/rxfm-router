@@ -8,9 +8,8 @@ const isRouteDetails = (
   value: ElementChild | RouteDetails
 ): value is RouteDetails => typeof value === "object";
 
-export const Router = () => {
-  const route = selectRouterState("route");
-  return combineLatest([route, selectRouterState("routes")]).pipe(
+export const Router = (): RxFM.JSX.Element =>
+  combineLatest([selectRouterState("route"), selectRouterState("routes")]).pipe(
     switchMap(([route, routes]) =>
       defer(() => {
         const getMatch = path<ElementChild | RouteDetails>(
@@ -28,5 +27,4 @@ export const Router = () => {
         );
       })
     )
-  ) as ElementChild;
-};
+  );
