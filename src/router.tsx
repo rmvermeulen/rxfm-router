@@ -11,7 +11,6 @@ import {
 import { combineLatestObject } from "rxjs-etc";
 import { selectRouterState, updateRouterState } from "./state";
 import { RouteDetails, RouteMap } from "./types";
-import qs from "qs";
 
 const isRouteDetails = (
   value: ElementChild | RouteDetails
