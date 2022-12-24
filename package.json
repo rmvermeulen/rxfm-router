@@ -23,10 +23,13 @@
   },
   "devDependencies": {
     "@types/qs": "^6.9.7",
+    "jest": "^29.3.1",
+    "jest-environment-jsdom": "^29.3.1",
     "rimraf": "^3.0.2",
     "rxfm": "^2.1.1",
     "rxjs": "^7.8.0",
     "rxjs-etc": "^10.6.2",
+    "ts-jest": "^29.0.3",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.4",
     "webpack": "^5.75.0",

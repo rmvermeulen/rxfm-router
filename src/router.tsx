@@ -14,11 +14,8 @@ import {
   selectRouterState,
   selectRouterStateKey,
 } from "./state";
-import { RouteDetails, RouteMap } from "./types";
-
-const isRouteDetails = (
-  value: ElementChild | RouteDetails
-): value is RouteDetails => typeof value === "object";
+import { RouteMap } from "./types";
+import { isRouteConfig } from "./utils";
 
 type RouterProps = {
   url?: URL;
@@ -60,13 +57,12 @@ export const Router = ({
       defer(() => {
         let match = matchRoute(url.pathname, routes);
 
-        if (isRouteDetails(match)) {
+        if (isRouteConfig(match)) {
           console.log("route details!", match);
-          match = match.view as ElementChild;
+          match = match.view;
         }
-        console.log({ match });
         return match ? (
-          <div>{match}</div>
+          <div>{match as ElementChild}</div>
         ) : (
           <pre>404 - [{url.href}] not found</pre>
         );

@@ -6,4 +6,4 @@ export {
   selectRouterState,
   selectRouterStateKey,
 } from "./state";
-export { RouteMap, RouterState, RouteDetails, NavigationState } from "./types";
+export { RouteMap, RouterState, NavigationState, RouteConfig } from "./types";
