@@ -1,4 +1,4 @@
-import { RamdaPath, intersperse, path } from "rambda";
+import { RamdaPath, compose, filter, intersperse, path, split } from "rambda";
 import RxFM, { DefaultProps, ElementChild } from "rxfm";
 import {
   Observable,
@@ -8,8 +8,12 @@ import {
   of,
   switchMap,
 } from "rxjs";
-import { combineLatestObject } from "rxjs-etc";
-import { selectRouterState, updateRouterState } from "./state";
+import {
+  initializeRouterState,
+  navigateTo,
+  selectRouterState,
+  selectRouterStateKey,
+} from "./state";
 import { RouteDetails, RouteMap } from "./types";
 
 const isRouteDetails = (
@@ -17,45 +21,60 @@ const isRouteDetails = (
 ): value is RouteDetails => typeof value === "object";
 
 type RouterProps = {
-  route: string | Observable<string>;
+  url: URL;
   routes: RouteMap | Observable<RouteMap>;
 } & DefaultProps;
 
-const makeObservable = <T,>(value: T | Observable<T>): Observable<T> =>
+const ensureObservable = <T,>(value: T | Observable<T>): Observable<T> =>
   isObservable(value) ? value : of(value);
 
-export const Router = ({ route, routes }: RouterProps): RxFM.JSX.Element => {
+const getRamdaPath: (path: string) => RamdaPath = compose(
+  intersperse("children"),
+  filter<string>(Boolean),
+  split("/")
+);
+
+export const Router = ({
+  url = new URL(window.location.href),
+  routes,
+}: RouterProps): RxFM.JSX.Element => {
   // initialize router state
-  combineLatestObject({
-    route: makeObservable(route),
-    routes: makeObservable(routes),
-  }).subscribe(updateRouterState);
-  // manage browser history
-  selectRouterState((x) => x.route).subscribe((route: string) =>
-    history.pushState(null, "", route.startsWith("/") ? route : `/${route}`)
+  ensureObservable(routes).subscribe((routeMap) =>
+    initializeRouterState(url, routeMap)
   );
-  window.onpopstate = (e: PopStateEvent) => {
-    getRouteF;
-  };
+  // manage browser history
+  selectRouterState((x) => x.url.pathname).subscribe((route: string) =>
+    history.pushState(null, "", route)
+  );
+  window.onpopstate = (e: PopStateEvent) => navigateTo(window.location.href);
+
   // react from now on
   return combineLatest([
-    selectRouterState("route"),
-    selectRouterState("routes"),
+    selectRouterStateKey("url"),
+    selectRouterStateKey("routes"),
   ]).pipe(
-    switchMap(([route, routes]) =>
+    switchMap(([url, routes]) =>
       defer(() => {
+        console.log(
+          url,
+          intersperse("children", filter(Boolean, url.pathname.split("/"))),
+          routes
+        );
+        // intersperse("children", url.pathname.split("/"))
         const getMatch = path<ElementChild | RouteDetails>(
-          intersperse("children", route.split("/")) as RamdaPath
+          getRamdaPath(url.pathname)
         );
         let match = getMatch(routes);
         // return typeof match == 'function')?
         if (isRouteDetails(match)) {
+          console.log("route details!", match);
           match = match.component;
         }
+        console.log({ match });
         return match ? (
           <div>{match}</div>
         ) : (
-          <pre>404 - [{route}] not found</pre>
+          <pre>404 - [{url.href}] not found</pre>
         );
       })
     )

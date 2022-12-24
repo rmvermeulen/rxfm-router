@@ -18,7 +18,6 @@ export type NavigationState = "idle" | "before" | "after";
 
 export type RouterState = {
   navigation: NavigationState;
-  fullUrl: string;
-  route: string;
+  url: URL;
   routes: RouteMap;
 };

@@ -1,13 +1,26 @@
-import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  distinctUntilChanged,
+  map,
+  take,
+} from "rxjs";
 import { NavigationState, RouteMap, RouterState } from "./types";
+import { evolve } from "rambda";
 
 // default store
-export const routerState = new BehaviorSubject<RouterState>({
+const routerState = new BehaviorSubject<RouterState>({
+  url: new URL("http://app"),
+  routes: {},
   navigation: "idle" as NavigationState,
-  fullUrl: "",
-  route: "",
-  routes: {} as RouteMap,
 });
+
+export const initializeRouterState = (url: URL, routes: RouteMap) =>
+  updateRouterState({ url, routes });
+
+export const updateRouterRouteMap = (routes: RouteMap) =>
+  updateRouterState({ routes });
 
 export const mapRouterState = (fn: (state: RouterState) => RouterState) =>
   routerState.next(fn(routerState.value));
@@ -25,10 +38,19 @@ const propFn =
   (value: T) =>
     value[prop];
 
-export const selectRouterState = (
-  selector: ((state: RouterState) => any) | keyof RouterState
-) =>
-  routerState.pipe(
-    map(typeof selector === "string" ? propFn(selector) : selector),
+export const selectRouterState = <R>(selector: (state: RouterState) => R) =>
+  routerState.pipe(map(selector), distinctUntilChanged());
+export const selectRouterStateKey = <
+  K extends keyof RouterState,
+  KV = RouterState[K]
+>(
+  selector: K
+): Observable<KV> =>
+  routerState.pipe<KV, KV>(
+    map((s) => propFn(selector)(s)),
     distinctUntilChanged()
   );
+
+export const navigateTo = (route: string) => {
+  mapRouterState(evolve({ url: ({ origin }) => new URL(route, origin) }));
+};
