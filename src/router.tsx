@@ -21,7 +21,7 @@ const isRouteDetails = (
 ): value is RouteDetails => typeof value === "object";
 
 type RouterProps = {
-  url: URL;
+  url?: URL;
   routes: RouteMap | Observable<RouteMap>;
 } & DefaultProps;
 
@@ -33,6 +33,9 @@ const getRamdaPath: (path: string) => RamdaPath = compose(
   filter<string>(Boolean),
   split("/")
 );
+
+const matchRoute = (route: string, routes: RouteMap) =>
+  path<RouteMap[keyof RouteMap]>(getRamdaPath(route))(routes);
 
 export const Router = ({
   url = new URL(window.location.href),
@@ -55,20 +58,11 @@ export const Router = ({
   ]).pipe(
     switchMap(([url, routes]) =>
       defer(() => {
-        console.log(
-          url,
-          intersperse("children", filter(Boolean, url.pathname.split("/"))),
-          routes
-        );
-
-        const getMatch = path<ElementChild | RouteDetails>(
-          getRamdaPath(url.pathname)
-        );
-        let match = getMatch(routes);
+        let match = matchRoute(url.pathname, routes);
 
         if (isRouteDetails(match)) {
           console.log("route details!", match);
-          match = match.view;
+          match = match.view as ElementChild;
         }
         console.log({ match });
         return match ? (

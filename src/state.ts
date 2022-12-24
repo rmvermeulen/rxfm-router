@@ -1,13 +1,7 @@
-import {
-  BehaviorSubject,
-  Observable,
-  Subject,
-  distinctUntilChanged,
-  map,
-  take,
-} from "rxjs";
+import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
 import { NavigationState, RouteMap, RouterState } from "./types";
-import { evolve } from "rambda";
+
+import { getMatches } from "./utils";
 
 // default store
 const routerState = new BehaviorSubject<RouterState>({
@@ -52,5 +46,8 @@ export const selectRouterStateKey = <
   );
 
 export const navigateTo = (route: string) => {
-  mapRouterState(evolve({ url: ({ origin }) => new URL(route, origin) }));
+  const url = new URL(route, routerState.value.url.origin);
+  const matches = getMatches(url.pathname, routerState.value.routes);
+  console.log("route matches", matches);
+  updateRouterState({ url });
 };

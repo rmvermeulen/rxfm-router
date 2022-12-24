@@ -1,6 +1,6 @@
 import RxFM, { DefaultProps } from "rxfm";
-import { Observable, map, of } from "rxjs";
-import { navigateTo, updateRouterState } from "./state";
+import { Observable, map } from "rxjs";
+import { navigateTo } from "./state";
 
 export const Link = ({
   href,
