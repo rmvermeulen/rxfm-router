@@ -8,7 +8,7 @@ export type SubjectType<T> = T extends Subject<infer X> ? X : never;
 export type ObservableType<T> = T extends Observable<infer X> ? X : never;
 export type RouteDetails = {
   name: string;
-  component: ElementChild;
+  view: ElementChild;
   children?: RouteMap;
 };
 export type RouteMap = {

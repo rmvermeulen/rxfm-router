@@ -60,15 +60,15 @@ export const Router = ({
           intersperse("children", filter(Boolean, url.pathname.split("/"))),
           routes
         );
-        // intersperse("children", url.pathname.split("/"))
+
         const getMatch = path<ElementChild | RouteDetails>(
           getRamdaPath(url.pathname)
         );
         let match = getMatch(routes);
-        // return typeof match == 'function')?
+
         if (isRouteDetails(match)) {
           console.log("route details!", match);
-          match = match.component;
+          match = match.view;
         }
         console.log({ match });
         return match ? (
