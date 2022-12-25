@@ -2,14 +2,14 @@
   "name": "rxfm-router",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "type": "module",
   "files": [
-    "src"
+    "dist"
   ],
   "scripts": {
     "test": "jest",
-    "build": "pnpm run clean && webpack --config webpack.prod.js",
-    "dev": "pnpm run clean && webpack --config webpack.dev.js",
+    "build": "pnpm run clean && webpack --config webpack.prod.cjs",
     "clean": "rimraf dist"
   },
   "keywords": [],
@@ -18,14 +18,12 @@
   "peerDependencies": {
     "rxfm": "^2.0.0"
   },
-  "dependencies": {
-    "rambda": "^7.4.0"
-  },
   "devDependencies": {
-    "@types/qs": "^6.9.7",
+    "rambda": "^7.4.0",
     "jest": "^29.3.1",
     "jest-environment-jsdom": "^29.3.1",
     "rimraf": "^3.0.2",
+    "rollup": "^3.8.1",
     "rxfm": "^2.1.1",
     "rxjs": "^7.8.0",
     "rxjs-etc": "^10.6.2",
