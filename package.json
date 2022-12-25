@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
-  "type": "module",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "test": "jest",
-    "build": "pnpm run clean && webpack --config webpack.prod.cjs",
+    "build": "pnpm run clean && webpack --config webpack.prod.js",
     "clean": "rimraf dist"
   },
   "keywords": [],
