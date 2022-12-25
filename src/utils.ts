@@ -1,5 +1,5 @@
 import { compose } from "rambda";
-import { RouteConfig, RouteMap } from "./types";
+import { RouteConfig, RouteMap, RouteMapValue } from "./types";
 
 export const placeholderRegExp = /:(\w+)\//i;
 
@@ -24,6 +24,5 @@ export const getMatches = (route: string, routeMap: RouteMap) => {
 
   return matchedRoutes;
 };
-export const isRouteConfig = (
-  value: RouteMap[keyof RouteMap]
-): value is RouteConfig => typeof value === "object";
+export const isRouteConfig = (value: RouteMapValue): value is RouteConfig =>
+  typeof value === "object";

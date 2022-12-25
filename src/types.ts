@@ -16,6 +16,8 @@ export type RouteConfig<TProps extends {} = any, CProps extends {} = TProps> = {
 export type RouteMap<P extends {} = any> = {
   [href: string]: ElementChild | FC<P> | RouteConfig<P>;
 };
+export type RouteMapValue = RouteMap[keyof RouteMap];
+
 export type NavigationState = "idle" | "before" | "after";
 
 export type RouterState = {
