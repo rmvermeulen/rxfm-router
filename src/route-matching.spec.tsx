@@ -1,12 +1,12 @@
-import { ElementChild } from "rxfm";
+import { A, ElementChild } from "rxfm";
 import {
   SegmentType,
   classifySegment,
   getRouteVariables,
   matchPatternSegment,
 } from "./route-matching";
-import { flattenRouteMap, getMatches } from "./utils";
-import { EMPTY } from "rxjs";
+import { RouteMap } from "./types";
+import { flattenRouteMap, getMatch } from "./utils";
 
 describe(matchPatternSegment, () => {
   it.each`
@@ -70,6 +70,7 @@ describe(getRouteVariables, () => {
     ${"user/:name/hands"}   | ${"user/alice"}
     ${"user/:name/enemies"} | ${"user/alice/friends"}
     ${"user/**/:name"}      | ${"user/a/b/c/alice"}
+    ${"user"}               | ${"alice"}
   `(
     "throws when route and pattern do not match: $pattern <- $route",
     ({ pattern, route }) => {
@@ -81,6 +82,7 @@ describe(getRouteVariables, () => {
 
   test.each`
     pattern               | route                              | variables
+    ${"user/alice"}       | ${"user/alice"}                    | ${{}}
     ${"user/:name"}       | ${"user/alice"}                    | ${{ name: "alice" }}
     ${"user/:name/"}      | ${"user/alice"}                    | ${{ name: "alice" }}
     ${"user/:name/:age"}  | ${"user/alice/45"}                 | ${{ name: "alice", age: "45" }}
@@ -143,8 +145,50 @@ describe(flattenRouteMap, () => {
     });
   });
 });
-describe("route-map matching", () => {
-  it("exists as a separate function", () => {
-    expect(getMatches).toBeInstanceOf(Function);
+describe(getMatch, () => {
+  const compAbout = jest.fn() as ElementChild;
+  const compUser = jest.fn() as ElementChild;
+  const compUserDetails = jest.fn() as ElementChild;
+  const compUserDetailsLocation = jest.fn() as ElementChild;
+  const routeMap: RouteMap = flattenRouteMap({
+    about: compAbout,
+    "user/:name": {
+      name: "user",
+      view: compUser,
+      children: {
+        details: {
+          name: "details",
+          view: compUserDetails,
+          children: {
+            location: compUserDetailsLocation,
+          },
+        },
+      },
+    },
   });
+  console.log(routeMap);
+
+  it.each`
+    route                            | cfg                        | variables
+    ${"invalid"}                     | ${null}                    | ${{}}
+    ${"user"}                        | ${null}                    | ${{}}
+    ${"user/"}                       | ${null}                    | ${{}}
+    ${"about/user"}                  | ${null}                    | ${{}}
+    ${"about"}                       | ${compAbout}               | ${{}}
+    ${"about/"}                      | ${compAbout}               | ${{}}
+    ${"user/alice"}                  | ${compUser}                | ${{ name: "alice" }}
+    ${"user/alice/details"}          | ${compUserDetails}         | ${{ name: "alice" }}
+    ${"user/alice/details/location"} | ${compUserDetailsLocation} | ${{ name: "alice" }}
+  `(
+    "finds the correct result for $route -> $cfg",
+    ({ route, cfg, variables }) => {
+      const match = getMatch(route, routeMap);
+      if (match) {
+        expect(match[0]).toBe(cfg);
+        expect(match[1]).toEqual(variables);
+      } else {
+        expect(match).toBe(cfg);
+      }
+    }
+  );
 });

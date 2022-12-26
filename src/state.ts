@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
 import { NavigationState, RouteMap, RouterState } from "./types";
 
-import { flattenRouteMap, getMatches } from "./utils";
+import { flattenRouteMap, getMatch } from "./utils";
 
 // default store
 const routerState = new BehaviorSubject<RouterState>({
@@ -47,7 +47,8 @@ export const selectRouterStateKey = <
 
 export const navigateTo = (route: string) => {
   const url = new URL(route, routerState.value.url.origin);
-  const matches = getMatches(url.pathname, routerState.value.routes);
-  console.log("route matches", matches);
+  const match = getMatch(url.pathname, routerState.value.routes);
+  console.log("route match", { match });
+  // todo: pass matched route and variables...
   updateRouterState({ url });
 };

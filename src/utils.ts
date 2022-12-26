@@ -1,10 +1,6 @@
 import { Dictionary, compose, toPairs } from "rambda";
 import { RouteConfig, RouteMap, RouteMapValue } from "./types";
-
-const createMatcherRegExp = (route: string) => {
-  const re = /todo/i;
-  return re;
-};
+import { getRouteVariables } from "./route-matching";
 
 const flattenRouteConfig = (routeConfig: RouteConfig): Dictionary<any> => {
   const result: Dictionary<any> = {
@@ -35,17 +31,19 @@ export const flattenRouteMap = (routeMap: RouteMap): RouteMap => {
   return result;
 };
 
-export const getMatchableRoutes = (routes: RouteMap): string[] => {
-  throw new Error("Not implemented!");
-};
-
-export const getMatches = (route: string, routeMap: RouteMap) => {
-  const routes = compose(getMatchableRoutes, flattenRouteMap)(routeMap);
-  console.log(routes);
-  const matchers = routes.map(createMatcherRegExp);
-  const matchedRoutes = matchers.map((m) => m.exec(route)).filter(Boolean);
-
-  return matchedRoutes;
+export const getMatch = (
+  route: string,
+  routeMap: RouteMap
+): [RouteMapValue, Dictionary<string>] | null => {
+  for (const [pattern, cfg] of toPairs(routeMap)) {
+    try {
+      return [cfg, getRouteVariables(pattern, route)];
+    } catch {
+      // failed to match
+      continue;
+    }
+  }
+  return null;
 };
 export const isRouteConfig = (value: RouteMapValue): value is RouteConfig =>
   typeof value === "object";

@@ -89,9 +89,7 @@ export const getRouteVariables = (
     // leftover pattern segments
     segments.length ||
     // leftover route segments
-    remaining.length ||
-    // no variables found
-    Object.keys(routeVariables).length === 0
+    remaining.length
   ) {
     fail();
   }
