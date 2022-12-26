@@ -12,6 +12,7 @@ describe(matchPatternSegment, () => {
   it.each`
     patternSegment | routeSegments | result
     ${"user"}      | ${["user"]}   | ${[true, []]}
+    ${"user"}      | ${[]}         | ${[false, []]}
     ${":value"}    | ${["user"]}   | ${[true, [], { value: "user" }]}
     ${"*"}         | ${["user"]}   | ${[true, []]}
     ${"**"}        | ${["user"]}   | ${[true, []]}
@@ -67,6 +68,7 @@ describe(classifySegment, () => {
 describe(getRouteVariables, () => {
   it.each`
     pattern                 | route
+    ${""}                   | ${""}
     ${"user/:name/hands"}   | ${"user/alice"}
     ${"user/:name/enemies"} | ${"user/alice/friends"}
     ${"user/**/:name"}      | ${"user/a/b/c/alice"}
@@ -82,7 +84,6 @@ describe(getRouteVariables, () => {
 
   test.each`
     pattern               | route                              | variables
-    ${"user/alice"}       | ${"user/alice"}                    | ${{}}
     ${"user/:name"}       | ${"user/alice"}                    | ${{ name: "alice" }}
     ${"user/:name/"}      | ${"user/alice"}                    | ${{ name: "alice" }}
     ${"user/:name/:age"}  | ${"user/alice/45"}                 | ${{ name: "alice", age: "45" }}
@@ -92,7 +93,7 @@ describe(getRouteVariables, () => {
     ${"user/*/*/*/:name"} | ${"user/a/b/c/alice"}              | ${{ name: "alice" }}
     ${":a/:b/:c/:d/"}     | ${"user/age/face/word"}            | ${{ a: "user", b: "age", c: "face", d: "word" }}
   `("$pattern -> $route -> $variables", ({ pattern, route, variables }) => {
-    expect(getRouteVariables(pattern, route)).toMatchObject(variables);
+    expect(getRouteVariables(pattern, route)).toEqual(variables);
   });
 });
 

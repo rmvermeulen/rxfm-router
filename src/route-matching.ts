@@ -1,4 +1,4 @@
-import { Dictionary, F } from "rambda";
+import { Dictionary, F, trim } from "rambda";
 
 export enum SegmentType {
   Literal,
@@ -67,8 +67,8 @@ export const getRouteVariables = (
     throw new Error("Pattern and route do not match!");
   };
 
-  const segments = pattern.split("/").filter(Boolean);
-  let remaining = route.split("/").filter(Boolean);
+  const segments = pattern.split("/").map(trim).filter(Boolean);
+  let remaining = route.split("/").map(trim).filter(Boolean);
   if (segments.length === 0 || remaining.length === 0) fail();
 
   const routeVariables: Dictionary<string> = {};
