@@ -67,8 +67,8 @@ export const getRouteVariables = (
     throw new Error("Pattern and route do not match!");
   };
 
-  const segments = pattern.split("/");
-  let remaining = route.split("/");
+  const segments = pattern.split("/").filter(Boolean);
+  let remaining = route.split("/").filter(Boolean);
   if (segments.length === 0 || remaining.length === 0) fail();
 
   const routeVariables: Dictionary<string> = {};

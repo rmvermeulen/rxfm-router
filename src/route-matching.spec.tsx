@@ -80,11 +80,13 @@ describe(getRouteVariables, () => {
   test.each`
     pattern               | route                              | variables
     ${"user/:name"}       | ${"user/alice"}                    | ${{ name: "alice" }}
+    ${"user/:name/"}      | ${"user/alice"}                    | ${{ name: "alice" }}
     ${"user/:name/:age"}  | ${"user/alice/45"}                 | ${{ name: "alice", age: "45" }}
     ${"user/:name/*"}     | ${"user/alice/friends"}            | ${{ name: "alice" }}
     ${"user/:name/*/:id"} | ${"user/alice/friends/123"}        | ${{ name: "alice", id: "123" }}
     ${"user/:name/**"}    | ${"user/alice/friends/and/family"} | ${{ name: "alice" }}
     ${"user/*/*/*/:name"} | ${"user/a/b/c/alice"}              | ${{ name: "alice" }}
+    ${":a/:b/:c/:d/"}     | ${"user/age/face/word"}            | ${{ a: "user", b: "age", c: "face", d: "word" }}
   `("$pattern -> $route -> $variables", ({ pattern, route, variables }) => {
     expect(getRouteVariables(pattern, route)).toMatchObject(variables);
   });
