@@ -36,7 +36,7 @@ export const selectRouterState = <R>(selector: (state: RouterState) => R) =>
   routerState.pipe(map(selector), distinctUntilChanged());
 export const selectRouterStateKey = <
   K extends keyof RouterState,
-  KV = RouterState[K]
+  KV extends RouterState[K]
 >(
   selector: K
 ): Observable<KV> =>
