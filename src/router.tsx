@@ -15,7 +15,7 @@ import {
   selectRouterStateKey,
 } from "./state";
 import { RouteMap } from "./types";
-import { isRouteConfig } from "./utils";
+import { getMatch, isRouteConfig } from "./utils";
 
 type RouterProps = {
   url?: URL;
@@ -51,21 +51,20 @@ export const Router = ({
   // react from now on
   return combineLatest([
     selectRouterStateKey("url"),
-    selectRouterStateKey("routes"),
+    selectRouterStateKey("match"),
   ]).pipe(
-    switchMap(([url, routes]) =>
+    switchMap(([url, match]) =>
       defer(() => {
-        let match = matchRoute(url.pathname, routes);
-
-        if (isRouteConfig(match)) {
-          console.log("route details!", match);
-          match = match.view;
+        if (!match) {
+          return <pre>404 - [{url.href}] not found</pre>;
         }
-        return match ? (
-          <div>{match as ElementChild}</div>
-        ) : (
-          <pre>404 - [{url.href}] not found</pre>
-        );
+        const [cfg, vars] = match;
+        const view = isRouteConfig(cfg) ? cfg.view : cfg;
+        if (typeof view === "function" && view.length > 0) {
+          return view(vars);
+        } else {
+          return <div>{view as ElementChild}</div>;
+        }
       })
     )
   );

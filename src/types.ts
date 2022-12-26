@@ -1,4 +1,5 @@
-import { Component, ElementChild, FC } from "rxfm";
+import { Dictionary } from "rambda";
+import { ElementChild, FC } from "rxfm";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 export type BehaviorSubjectType<T> = T extends BehaviorSubject<infer X>
@@ -17,10 +18,9 @@ export type RouteMap<P extends {} = any> = {
 };
 export type RouteMapValue = RouteMap[keyof RouteMap];
 
-export type NavigationState = "idle" | "before" | "after";
-
 export type RouterState = {
-  navigation: NavigationState;
+  navigating: boolean;
   url: URL;
   routes: RouteMap;
+  match: null | [RouteMapValue, Dictionary<string>];
 };

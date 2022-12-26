@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
-import { NavigationState, RouteMap, RouterState } from "./types";
+import { RouteMap, RouterState } from "./types";
 
 import { flattenRouteMap, getMatch } from "./utils";
 
@@ -7,7 +7,8 @@ import { flattenRouteMap, getMatch } from "./utils";
 const routerState = new BehaviorSubject<RouterState>({
   url: new URL("http://app"),
   routes: {},
-  navigation: "idle" as NavigationState,
+  match: null,
+  navigating: false,
 });
 
 export const initializeRouterState = (url: URL, routes: RouteMap) =>
@@ -27,11 +28,6 @@ export const updateRouterState = (update: Partial<RouterState>) => {
   routerState.next(next);
 };
 
-const propFn =
-  <T>(prop: keyof T) =>
-  (value: T) =>
-    value[prop];
-
 export const selectRouterState = <R>(selector: (state: RouterState) => R) =>
   routerState.pipe(map(selector), distinctUntilChanged());
 export const selectRouterStateKey = <
@@ -41,14 +37,19 @@ export const selectRouterStateKey = <
   selector: K
 ): Observable<KV> =>
   routerState.pipe<KV, KV>(
-    map((s) => propFn(selector)(s)),
+    map((s) => s[selector] as KV),
     distinctUntilChanged()
   );
 
 export const navigateTo = (route: string) => {
   const url = new URL(route, routerState.value.url.origin);
   const match = getMatch(url.pathname, routerState.value.routes);
-  console.log("route match", { match });
-  // todo: pass matched route and variables...
-  updateRouterState({ url });
+  updateRouterState({ navigating: true });
+  if (match) {
+    updateRouterState({ url, match, navigating: false });
+  } else {
+    // todo: redirect to configured fallback
+    console.error(`unmatched route '${route}'`);
+  }
+  updateRouterState({ navigating: false });
 };
