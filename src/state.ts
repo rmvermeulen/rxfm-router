@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
 import { NavigationState, RouteMap, RouterState } from "./types";
 
-import { getMatches } from "./utils";
+import { flattenRouteMap, getMatches } from "./utils";
 
 // default store
 const routerState = new BehaviorSubject<RouterState>({
@@ -11,10 +11,10 @@ const routerState = new BehaviorSubject<RouterState>({
 });
 
 export const initializeRouterState = (url: URL, routes: RouteMap) =>
-  updateRouterState({ url, routes });
+  updateRouterState({ url, routes: flattenRouteMap(routes) });
 
 export const updateRouterRouteMap = (routes: RouteMap) =>
-  updateRouterState({ routes });
+  updateRouterState({ routes: flattenRouteMap(routes) });
 
 export const mapRouterState = (fn: (state: RouterState) => RouterState) =>
   routerState.next(fn(routerState.value));
