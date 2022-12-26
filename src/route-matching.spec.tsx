@@ -112,7 +112,6 @@ describe(flattenRouteMap, () => {
     expect(
       flattenRouteMap({
         info: {
-          name: "info",
           view: comp1,
           children: {
             details: comp2,
@@ -126,11 +125,9 @@ describe(flattenRouteMap, () => {
     expect(
       flattenRouteMap({
         info: {
-          name: "info",
           view: comp1,
           children: {
             details: {
-              name: "details",
               view: comp2,
               children: {
                 "even-more-details": comp3,
@@ -154,11 +151,9 @@ describe(getMatch, () => {
   const routeMap: RouteMap = flattenRouteMap({
     about: compAbout,
     "user/:name": {
-      name: "user",
       view: compUser,
       children: {
         details: {
-          name: "details",
           view: compUserDetails,
           children: {
             location: compUserDetailsLocation,

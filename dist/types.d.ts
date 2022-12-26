@@ -4,7 +4,6 @@ export type BehaviorSubjectType<T> = T extends BehaviorSubject<infer X> ? X : ne
 export type SubjectType<T> = T extends Subject<infer X> ? X : never;
 export type ObservableType<T> = T extends Observable<infer X> ? X : never;
 export type RouteConfig<TProps extends {} = any, CProps extends {} = TProps> = {
-    name?: string | ((p: TProps) => string);
     view: FC<TProps> | ElementChild;
     children?: RouteMap<CProps>;
 };
