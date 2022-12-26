@@ -1,10 +1,12 @@
+import { ElementChild } from "rxfm";
 import {
   SegmentType,
   classifySegment,
   getRouteVariables,
   matchPatternSegment,
 } from "./route-matching";
-import { getMatches } from "./utils";
+import { flattenRouteMap, getMatches } from "./utils";
+import { EMPTY } from "rxjs";
 
 describe(matchPatternSegment, () => {
   it.each`
@@ -92,6 +94,55 @@ describe(getRouteVariables, () => {
   });
 });
 
+describe(flattenRouteMap, () => {
+  it("unnests child routes", () => {
+    const comp1 = jest.fn() as ElementChild;
+    const comp2 = jest.fn() as ElementChild;
+    const comp3 = jest.fn() as ElementChild;
+    expect(
+      flattenRouteMap({
+        home: comp1,
+      })
+    ).toEqual({
+      home: comp1,
+    });
+    expect(
+      flattenRouteMap({
+        info: {
+          name: "info",
+          view: comp1,
+          children: {
+            details: comp2,
+          },
+        },
+      })
+    ).toEqual({
+      info: comp1,
+      "info/details": comp2,
+    });
+    expect(
+      flattenRouteMap({
+        info: {
+          name: "info",
+          view: comp1,
+          children: {
+            details: {
+              name: "details",
+              view: comp2,
+              children: {
+                "even-more-details": comp3,
+              },
+            },
+          },
+        },
+      })
+    ).toEqual({
+      info: comp1,
+      "info/details": comp2,
+      "info/details/even-more-details": comp3,
+    });
+  });
+});
 describe("route-map matching", () => {
   it("exists as a separate function", () => {
     expect(getMatches).toBeInstanceOf(Function);
