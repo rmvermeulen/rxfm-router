@@ -41,8 +41,26 @@ export const selectRouterStateKey = <
     distinctUntilChanged()
   );
 
+const createUrl = (route: string): { url: URL; isAbsolute: boolean } => {
+  try {
+    const url = new URL(route);
+    return { url, isAbsolute: true };
+  } catch {
+    return {
+      url: new URL(route, routerState.value.url.origin),
+      isAbsolute: false,
+    };
+  }
+};
+
 export const navigateTo = (route: string) => {
-  const url = new URL(route, routerState.value.url.origin);
+  const { url, isAbsolute } = createUrl(route);
+  if (isAbsolute && url.origin !== routerState.value.url.origin) {
+    // just go there
+    window.location.href = url.href;
+    return;
+  }
+
   const match = getMatch(url.pathname, routerState.value.routes);
   updateRouterState({ navigating: true });
   if (match) {
