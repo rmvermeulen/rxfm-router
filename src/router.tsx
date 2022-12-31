@@ -1,5 +1,5 @@
-import { RamdaPath, compose, filter, intersperse, path, split } from "rambda";
-import RxFM, { DefaultProps, ElementChild } from "rxfm";
+import { RamdaPath, compose, filter, intersperse, split } from "rambda";
+import RxFM, { Component, DefaultProps, ElementChild } from "rxfm";
 import {
   Observable,
   combineLatest,
@@ -15,28 +15,25 @@ import {
   selectRouterStateKey,
 } from "./state";
 import { RouteMap } from "./types";
-import { getMatch, isRouteConfig } from "./utils";
+import { isRouteConfig } from "./utils";
 
 type RouterProps = {
   url?: URL;
   routes: RouteMap | Observable<RouteMap>;
+  fallback?: (props: { url: URL }) => Component;
 } & DefaultProps;
 
 const ensureObservable = <T,>(value: T | Observable<T>): Observable<T> =>
   isObservable(value) ? value : of(value);
 
-const getRamdaPath: (path: string) => RamdaPath = compose(
-  intersperse("children"),
-  filter<string>(Boolean),
-  split("/")
+const defaultFallback = ({ url: { href } }: { url: URL }) => (
+  <pre>404 - [{href}] not found</pre>
 );
-
-const matchRoute = (route: string, routes: RouteMap) =>
-  path<RouteMap[keyof RouteMap]>(getRamdaPath(route))(routes);
 
 export const Router = ({
   url = new URL(window.location.href),
   routes,
+  fallback = defaultFallback,
 }: RouterProps): RxFM.JSX.Element => {
   // initialize router state
   ensureObservable(routes).subscribe((routeMap) =>
@@ -56,7 +53,7 @@ export const Router = ({
     switchMap(([url, match]) =>
       defer(() => {
         if (!match) {
-          return <pre>404 - [{url.href}] not found</pre>;
+          return fallback({ url });
         }
         const [cfg, vars] = match;
         const view = isRouteConfig(cfg) ? cfg.view : cfg;

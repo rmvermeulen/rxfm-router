@@ -56,18 +56,14 @@ const createUrl = (route: string): { url: URL; isAbsolute: boolean } => {
 export const navigateTo = (route: string) => {
   const { url, isAbsolute } = createUrl(route);
   if (isAbsolute && url.origin !== routerState.value.url.origin) {
-    // just go there
     window.location.href = url.href;
     return;
   }
 
   const match = getMatch(url.pathname, routerState.value.routes);
   updateRouterState({ navigating: true });
-  if (match) {
-    updateRouterState({ url, match, navigating: false });
-  } else {
-    // todo: redirect to configured fallback
-    console.error(`unmatched route '${route}'`);
-  }
+  // todo: pre-navigate stuff
+  updateRouterState({ url, match, navigating: false });
+  // todo: post-navigate stuff
   updateRouterState({ navigating: false });
 };
