@@ -34,6 +34,7 @@ export const Router = ({
   url = new URL(window.location.href),
   routes,
   fallback = defaultFallback,
+  children = [],
 }: RouterProps): RxFM.JSX.Element => {
   // initialize router state
   ensureObservable(routes).subscribe((routeMap) =>
@@ -52,15 +53,19 @@ export const Router = ({
   ]).pipe(
     switchMap(([url, match]) =>
       defer(() => {
+        console.log("got children", children);
         if (!match) {
           return fallback({ url });
         }
         const [cfg, vars] = match;
         const view = isRouteConfig(cfg) ? cfg.view : cfg;
+        if (!view) {
+          return fallback({ url });
+        }
         if (typeof view === "function" && view.length > 0) {
           return view(vars);
         } else {
-          return <div>{view as ElementChild}</div>;
+          return (isObservable(view) ? view : of(view)) as RxFM.JSX.Element;
         }
       })
     )

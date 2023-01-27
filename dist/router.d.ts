@@ -8,5 +8,5 @@ type RouterProps = {
         url: URL;
     }) => Component;
 } & DefaultProps;
-export declare const Router: ({ url, routes, fallback, }: RouterProps) => RxFM.JSX.Element;
+export declare const Router: ({ url, routes, fallback, children, }: RouterProps) => RxFM.JSX.Element;
 export {};
